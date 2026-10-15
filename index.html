@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="robots" content="index,follow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://*.supabase.co; font-src 'self' data:;">
+<title>لومرا رویال | Lumera Royal</title>
+<style>
+:root{
+  --bg:#07060c; --card:rgba(22,18,40,.92); --ink:#f6f0ff; --muted:#b9a8d4;
+  --gold:#f5c15a; --gold2:#ffe7a8; --purple:#8b5cf6; --cyan:#22d3ee; --pink:#f472b6;
+  --line:rgba(245,193,90,.18); --ok:#34d399; --danger:#f87171;
+  --r:18px; --font:Tahoma,"Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--font);background:var(--bg);color:var(--ink)}
+body{background:
+  radial-gradient(900px 500px at 10% -10%,rgba(139,92,246,.25),transparent 55%),
+  radial-gradient(700px 400px at 100% 0%,rgba(245,193,90,.12),transparent 50%),
+  radial-gradient(600px 400px at 50% 100%,rgba(34,211,238,.08),transparent 45%),
+  var(--bg)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+a{color:var(--gold2);text-decoration:none}
+.hidden{display:none!important}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.04);opacity:.9}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes ringGlow{0%,100%{box-shadow:0 0 0 0 rgba(245,193,90,.35),0 0 40px rgba(139,92,246,.25)}50%{box-shadow:0 0 0 10px rgba(245,193,90,0),0 0 60px rgba(34,211,238,.3)}}
+
+/* Intro ring */
+#gate{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px;background:rgba(5,4,10,.94);backdrop-filter:blur(10px)}
+.ring-wrap{position:relative;width:150px;height:150px}
+.ring{position:absolute;inset:0;border-radius:50%;border:3px solid transparent;
+  border-top-color:var(--gold);border-right-color:var(--purple);border-bottom-color:var(--cyan);border-left-color:var(--pink);
+  animation:spin 1.2s linear infinite,ringGlow 2.4s ease-in-out infinite}
+.ring-core{position:absolute;inset:18px;border-radius:50%;background:linear-gradient(145deg,#1a1430,#0c0a14);
+  display:grid;place-items:center;border:1px solid var(--line)}
+.ring-core b{font-size:13px;letter-spacing:.12em;color:var(--gold2)}
+#gate h1{font-size:1.5rem;background:linear-gradient(90deg,var(--gold2),var(--pink),var(--cyan));-webkit-background-clip:text;color:transparent}
+#gate p{color:var(--muted);font-size:.9rem}
+
+/* Auth */
+#auth{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 14px}
+.auth-card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 22px;animation:fadeUp .45s ease both;
+  box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.brand{text-align:center;margin-bottom:20px}
+.brand .mark{width:64px;height:64px;margin:0 auto 12px;border-radius:50%;
+  background:conic-gradient(from 0deg,var(--gold),var(--purple),var(--cyan),var(--pink),var(--gold));
+  display:grid;place-items:center;animation:pulse 3s ease-in-out infinite}
+.brand .mark span{width:52px;height:52px;border-radius:50%;background:#120e1c;display:grid;place-items:center;font-weight:900;font-size:12px;color:var(--gold2)}
+.brand h2{font-size:1.35rem;margin-bottom:4px}
+.brand p{color:var(--muted);font-size:.82rem}
+.tabs{display:flex;gap:8px;margin:16px 0}
+.tabs button{flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.04);color:var(--muted);font-weight:700}
+.tabs button.on{background:linear-gradient(135deg,rgba(245,193,90,.2),rgba(139,92,246,.2));color:var(--gold2);border:1px solid var(--line)}
+label{display:block;font-size:.75rem;color:var(--muted);margin:12px 0 6px}
+input,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.35);outline:none}
+input:focus,textarea:focus{border-color:rgba(245,193,90,.55)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px 16px;margin-top:16px;border-radius:14px;font-weight:800;
+  background:linear-gradient(135deg,var(--gold),#e8a23a 40%,var(--purple));color:#1a1200;border:0}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--gold2);border:1px solid var(--line)}
+.msg{margin-top:12px;font-size:.85rem;color:var(--danger);min-height:1.2em;text-align:center}
+.msg.ok{color:var(--ok)}
+
+/* App shell */
+#app{display:none;max-width:640px;margin:0 auto;padding:12px 12px 90px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 4px 14px;position:sticky;top:0;z-index:10;
+  background:linear-gradient(180deg,rgba(7,6,12,.95),rgba(7,6,12,.8) 70%,transparent)}
+.user-chip{display:flex;align-items:center;gap:10px}
+.avatar{width:42px;height:42px;border-radius:50%;background:conic-gradient(var(--gold),var(--purple),var(--cyan),var(--gold));display:grid;place-items:center;font-weight:900;font-size:14px}
+.avatar i{width:36px;height:36px;border-radius:50%;background:#14101f;display:grid;place-items:center}
+.user-chip strong{display:block;font-size:.95rem}
+.user-chip small{color:var(--muted);font-size:.75rem}
+.stats{display:flex;gap:8px}
+.stat{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:12px;padding:6px 10px;text-align:center;min-width:58px}
+.stat b{display:block;color:var(--gold2);font-size:.95rem}
+.stat span{font-size:.65rem;color:var(--muted)}
+
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:640px;margin:0 auto;display:flex;background:rgba(12,10,20,.94);border-top:1px solid var(--line);backdrop-filter:blur(12px);z-index:20;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+.nav button{flex:1;padding:10px 4px;color:var(--muted);font-size:.7rem;display:flex;flex-direction:column;align-items:center;gap:4px}
+.nav button.on{color:var(--gold2)}
+.nav button span{font-size:1.1rem}
+
+.panel{animation:fadeUp .35s ease both}
+.hero{background:linear-gradient(135deg,rgba(245,193,90,.12),rgba(139,92,246,.14),rgba(34,211,238,.08));
+  border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+.hero h3{font-size:1.05rem;margin-bottom:6px}
+.hero p{color:var(--muted);font-size:.85rem;line-height:1.7}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px}
+.filters button{white-space:nowrap;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.04);color:var(--muted);font-size:.78rem;border:1px solid transparent}
+.filters button.on{border-color:var(--line);color:var(--gold2);background:rgba(245,193,90,.1)}
+
+.task{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.task.done{opacity:.55}
+.task .pts{min-width:48px;text-align:center;background:rgba(245,193,90,.1);border-radius:12px;padding:8px 4px;color:var(--gold2);font-weight:800;font-size:.85rem}
+.task .body{flex:1}
+.task .body b{display:block;margin-bottom:4px}
+.task .body p{color:var(--muted);font-size:.8rem;line-height:1.55}
+.task .actions{display:flex;flex-direction:column;gap:6px}
+.task .actions button{padding:8px 12px;border-radius:10px;background:linear-gradient(135deg,rgba(245,193,90,.9),rgba(139,92,246,.85));color:#1a1200;font-weight:800;font-size:.78rem}
+.task .actions button.link{background:rgba(255,255,255,.06);color:var(--ink);border:1px solid var(--line)}
+.task .actions button:disabled{opacity:.5}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:12px}
+.card h4{margin-bottom:10px;color:var(--gold2)}
+.lb-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.lb-row:last-child{border-bottom:0}
+.lb-rank{width:28px;height:28px;border-radius:50%;background:rgba(245,193,90,.15);display:grid;place-items:center;font-size:.8rem;font-weight:800;color:var(--gold2)}
+#qrBox{display:flex;flex-direction:column;align-items:center;gap:12px;padding:10px}
+#qrBox canvas,#qrBox img{border-radius:12px;background:#fff;padding:8px}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.badge{padding:4px 10px;border-radius:999px;font-size:.72rem;background:rgba(245,193,90,.12);border:1px solid var(--line);color:var(--gold2)}
+
+/* Public profile */
+#public{display:none;min-height:100vh;padding:24px 14px}
+.pub-card{max-width:420px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:24px;text-align:center;animation:fadeUp .4s ease}
+.pub-card .big{width:88px;height:88px;margin:0 auto 14px;border-radius:50%;background:conic-gradient(var(--gold),var(--purple),var(--cyan),var(--pink),var(--gold));display:grid;place-items:center}
+.pub-card .big span{width:76px;height:76px;border-radius:50%;background:#120e1c;display:grid;place-items:center;font-size:1.4rem;font-weight:900}
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="ring-wrap"><div class="ring"></div><div class="ring-core"><b>ROYAL</b></div></div>
+  <h1>لومرا رویال</h1>
+  <p>در حال آماده‌سازی تاج...</p>
+</div>
+
+<div id="auth" class="hidden">
+  <div class="auth-card">
+    <div class="brand">
+      <div class="mark"><span>LR</span></div>
+      <h2>لومرا رویال</h2>
+      <p>مأموریت‌ها · امتیاز · کارت سلطنتی</p>
+    </div>
+    <div class="tabs">
+      <button type="button" class="on" id="tabLogin">ورود</button>
+      <button type="button" id="tabReg">ثبت‌نام</button>
+    </div>
+    <div id="loginBox">
+      <label>نام کاربری</label>
+      <input id="loginUser" autocomplete="username" maxlength="24" placeholder="مثلاً arya">
+      <label>رمز عبور</label>
+      <input id="loginPass" type="password" autocomplete="current-password" maxlength="64" placeholder="رمز">
+      <button class="btn" id="btnLogin">ورود به رویال</button>
+    </div>
+    <div id="regBox" class="hidden">
+      <label>نام کاربری</label>
+      <input id="regUser" maxlength="24" placeholder="حروف انگلیسی و عدد">
+      <label>نام نمایشی</label>
+      <input id="regName" maxlength="40" placeholder="نام نمایشی">
+      <label>رمز عبور (حداقل ۸ کاراکتر)</label>
+      <input id="regPass" type="password" maxlength="64" placeholder="رمز قوی">
+      <label>تکرار رمز</label>
+      <input id="regPass2" type="password" maxlength="64" placeholder="تکرار">
+      <button class="btn" id="btnReg">ساخت تاج رویال</button>
+    </div>
+    <div class="msg" id="authMsg"></div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="top">
+    <div class="user-chip">
+      <div class="avatar"><i id="avLetter">R</i></div>
+      <div>
+        <strong id="dispName">—</strong>
+        <small id="dispUser">@—</small>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="stPoints">0</b><span>امتیاز</span></div>
+      <div class="stat"><b id="stLevel">1</b><span>سطح</span></div>
+      <div class="stat"><b id="stTasks">0</b><span>تسک</span></div>
+    </div>
+  </div>
+
+  <section id="panelTasks" class="panel">
+    <div class="hero">
+      <h3>مأموریت‌های سلطنتی</h3>
+      <p>با انجام تسک‌ها امتیاز بگیر، سطح بالا ببر و کارت QR رویال بساز. برخی تسک‌ها لینک محصولات لومرا را باز می‌کنند.</p>
+    </div>
+    <div class="filters" id="catFilters"></div>
+    <div id="taskList"></div>
+  </section>
+
+  <section id="panelQr" class="panel hidden">
+    <div class="card">
+      <h4>کارت QR رویال</h4>
+      <div id="qrBox"><p style="color:var(--muted)">در حال ساخت...</p></div>
+      <p style="color:var(--muted);font-size:.8rem;margin-top:10px;text-align:center;line-height:1.6">با اسکن این کد، پروفایل عمومی رویال شما دیده می‌شود.</p>
+      <button class="btn ghost" id="btnCopyLink" style="margin-top:10px">کپی لینک پروفایل</button>
+    </div>
+    <div class="card">
+      <h4>نشان‌ها</h4>
+      <div class="badges" id="badgeBox"></div>
+    </div>
+  </section>
+
+  <section id="panelLb" class="panel hidden">
+    <div class="card">
+      <h4>جدول برترین‌ها</h4>
+      <div id="lbList"></div>
+    </div>
+  </section>
+
+  <section id="panelMore" class="panel hidden">
+    <div class="card">
+      <h4>لینک محصولات لومرا</h4>
+      <p style="line-height:2;font-size:.9rem">
+        <a href="https://amir112233445566778899.github.io/LUMERA/" target="_blank" rel="noopener">لومرا اصلی</a><br>
+        <a href="https://amir112233445566778899.github.io/LUMERA-AI/" target="_blank" rel="noopener">لومرا AI / دارک</a><br>
+        <a href="https://t.me/LUMERAir" target="_blank" rel="noopener">کانال تلگرام</a><br>
+        <a href="https://t.me/Lumerastudio_bot" target="_blank" rel="noopener">ربات راهنما</a>
+      </p>
+    </div>
+    <div class="card">
+      <h4>تنظیمات</h4>
+      <button class="btn ghost" id="btnLogout">خروج از حساب</button>
+    </div>
+  </section>
+
+  <nav class="nav">
+    <button type="button" class="on" data-panel="panelTasks"><span>👑</span>تسک‌ها</button>
+    <button type="button" data-panel="panelQr"><span>▣</span>QR</button>
+    <button type="button" data-panel="panelLb"><span>🏆</span>برتر</button>
+    <button type="button" data-panel="panelMore"><span>⋯</span>بیشتر</button>
+  </nav>
+</div>
+
+<div id="public">
+  <div class="pub-card" id="pubInner">
+    <div class="big"><span id="pubLetter">?</span></div>
+    <h2 id="pubName">—</h2>
+    <p id="pubUser" style="color:var(--muted);margin:4px 0 14px">@—</p>
+    <div class="stats" style="justify-content:center">
+      <div class="stat"><b id="pubPoints">0</b><span>امتیاز</span></div>
+      <div class="stat"><b id="pubLevel">1</b><span>سطح</span></div>
+      <div class="stat"><b id="pubTasks">0</b><span>تسک</span></div>
+    </div>
+    <div class="badges" id="pubBadges" style="justify-content:center;margin-top:14px"></div>
+    <p style="margin-top:18px"><a href="?" id="pubJoin">عضویت در لومرا رویال</a></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+(function(){
+const URL='https://tztbyezqqcquiaqaiycg.supabase.co';
+const KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR6dGJ5ZXpxcWNxdWlhcWFpeWNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNTc3MTMsImV4cCI6MjEwNzYzMzcxM30.n8mOPU-2q1xqO4zaEdrddslh8ZW5YmQLEBK9y21nY5s';
+const TOKEN_KEY='lr_token_v1';
+const LINKS={
+  open_lumera:'https://amir112233445566778899.github.io/LUMERA/',
+  open_store:'https://amir112233445566778899.github.io/LUMERA/',
+  open_host:'https://lumera421.github.io/Lumera_-host/',
+  open_dark:'https://amir112233445566778899.github.io/LUMERA-AI/',
+  open_ai:'https://amir112233445566778899.github.io/LUMERA-AI/',
+  tg_channel:'https://t.me/LUMERAir',
+  tg_bot:'https://t.me/Lumerastudio_bot',
+  rubika:'https://rubika.ir/joinc/FGGGCEDH0FWPEXSTSHOTLIPJQHVNJSKI',
+  open_github_lumera:'https://github.com/amir112233445566778899/LUMERA'
+};
+const SECRET_CODE='LUMERA-ROYAL-70';
+
+let token=localStorage.getItem(TOKEN_KEY)||'';
+let user=null;
+let tasks=[];
+let cat='همه';
+
+async function sha256(text){
+  const buf=await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function rpc(name, body){
+  const r=await fetch(URL+'/rest/v1/rpc/'+name,{
+    method:'POST',
+    headers:{
+      'apikey':KEY,
+      'Authorization':'Bearer '+KEY,
+      'Content-Type':'application/json',
+      'Prefer':'return=representation'
+    },
+    body:JSON.stringify(body||{})
+  });
+  let data=null;
+  try{ data=await r.json(); }catch(e){ data=null; }
+  if(!r.ok){
+    const msg=(data&&(data.message||data.error||data.hint))||('HTTP '+r.status);
+    return {ok:false,error:msg,data};
+  }
+  return data;
+}
+function setToken(t){
+  token=t||'';
+  if(token) localStorage.setItem(TOKEN_KEY, token);
+  else localStorage.removeItem(TOKEN_KEY);
+}
+function show(el){ el.classList.remove('hidden'); }
+function hide(el){ el.classList.add('hidden'); }
+
+async function boot(){
+  const q=new URLSearchParams(location.search);
+  const pub=q.get('u');
+  if(pub){
+    hide(document.getElementById('gate'));
+    hide(document.getElementById('auth'));
+    hide(document.getElementById('app'));
+    show(document.getElementById('public'));
+    await loadPublic(pub);
+    return;
+  }
+  if(token){
+    const me=await rpc('royal_me',{p_token:token});
+    if(me && me.ok){
+      user=me.user;
+      hide(document.getElementById('gate'));
+      hide(document.getElementById('auth'));
+      document.getElementById('app').style.display='block';
+      renderUser();
+      await loadTasks();
+      return;
+    }
+    setToken('');
+  }
+  hide(document.getElementById('gate'));
+  show(document.getElementById('auth'));
+}
+
+function renderUser(){
+  if(!user) return;
+  document.getElementById('dispName').textContent=user.display_name||user.username;
+  document.getElementById('dispUser').textContent='@'+user.username;
+  document.getElementById('avLetter').textContent=(user.display_name||user.username||'R').slice(0,1).toUpperCase();
+  document.getElementById('stPoints').textContent=user.points||0;
+  document.getElementById('stLevel').textContent=user.level||1;
+  document.getElementById('stTasks').textContent=user.tasks_done||0;
+  const bb=document.getElementById('badgeBox');
+  const badges=user.badges||[];
+  bb.innerHTML=badges.length? badges.map(b=>'<span class="badge">'+esc(String(b))+'</span>').join('') : '<span style="color:var(--muted);font-size:.85rem">هنوز نشانی ندارید</span>';
+}
+
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
+async function loadTasks(){
+  const res=await rpc('royal_list_tasks',{p_token:token});
+  if(!res||!res.ok){ document.getElementById('taskList').innerHTML='<p style="color:var(--danger)">خطا در بارگذاری تسک‌ها</p>'; return; }
+  tasks=res.tasks||[];
+  const cats=['همه',...new Set(tasks.map(t=>t.category))];
+  const f=document.getElementById('catFilters');
+  f.innerHTML=cats.map(c=>'<button type="button" data-cat="'+esc(c)+'" class="'+(c===cat?'on':'')+'">'+esc(c)+'</button>').join('');
+  f.querySelectorAll('button').forEach(b=>b.onclick=()=>{ cat=b.dataset.cat; loadTasks(); });
+  const list=document.getElementById('taskList');
+  const filtered=tasks.filter(t=>cat==='همه'||t.category===cat);
+  list.innerHTML=filtered.map(t=>{
+    const hasLink=!!LINKS[t.task_key];
+    return '<div class="task '+(t.done?'done':'')+'">'+
+      '<div class="pts">+'+t.points+'</div>'+
+      '<div class="body"><b>'+esc(t.title)+'</b><p>'+esc(t.description)+'</p><small style="color:var(--muted)">'+esc(t.category)+'</small></div>'+
+      '<div class="actions">'+
+        (hasLink?'<button type="button" class="link" data-open="'+esc(t.task_key)+'">باز کردن</button>':'')+
+        (t.done?'<button type="button" disabled>انجام شد</button>':'<button type="button" data-do="'+esc(t.task_key)+'">انجام شد</button>')+
+      '</div></div>';
+  }).join('')||'<p style="color:var(--muted)">تسکی نیست</p>';
+  list.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>window.open(LINKS[b.dataset.open],'_blank','noopener'));
+  list.querySelectorAll('[data-do]').forEach(b=>b.onclick=()=>completeTask(b.dataset.do));
+}
+
+async function completeTask(key){
+  if(key==='secret_room'){
+    const code=prompt('کد مخفی رویال را وارد کن:');
+    if(code!==SECRET_CODE){ alert('کد اشتباه است'); return; }
+  }
+  if(key==='quiz_lumera'){
+    const a=prompt('پایتخت ایران؟');
+    if((a||'').trim()!=='تهران'){ alert('جواب اشتباه'); return; }
+  }
+  if(key==='quiz_royal'){
+    const a=prompt('نام این بخش چیست؟ (رویال/royal)');
+    if(!/رویال|royal/i.test(a||'')){ alert('جواب اشتباه'); return; }
+  }
+  if(key==='quiz_security'){
+    const a=prompt('آیا رمز را باید به غریبه داد؟ (خیر)');
+    if(!/خیر|نه|no/i.test(a||'')){ alert('جواب اشتباه'); return; }
+  }
+  if(['open_lumera','open_store','open_host','open_dark','open_ai','tg_channel','tg_bot','rubika','open_github_lumera'].includes(key) && LINKS[key]){
+    window.open(LINKS[key],'_blank','noopener');
+  }
+  const res=await rpc('royal_complete_task',{p_token:token,p_task_key:key});
+  if(!res||!res.ok){ alert((res&&res.error)||'خطا'); return; }
+  if(res.user){
+    user={...user,...res.user};
+    const me=await rpc('royal_me',{p_token:token});
+    if(me&&me.ok) user=me.user;
+    renderUser();
+  }
+  await loadTasks();
+  if(key==='qr_view'||key==='qr_share') renderQr();
+}
+
+async function renderQr(){
+  const box=document.getElementById('qrBox');
+  const link=location.origin+location.pathname+'?u='+encodeURIComponent(user.username);
+  box.innerHTML='';
+  try{
+    if(window.QRCode){
+      const canvas=document.createElement('canvas');
+      await QRCode.toCanvas(canvas, link, {width:220, margin:2, color:{dark:'#1a1200', light:'#ffffff'}});
+      box.appendChild(canvas);
+    }else{
+      box.innerHTML='<p style="color:var(--muted);word-break:break-all">'+esc(link)+'</p>';
+    }
+    const p=document.createElement('p');
+    p.style.cssText='font-size:.8rem;color:var(--muted);word-break:break-all;text-align:center';
+    p.textContent=link;
+    box.appendChild(p);
+  }catch(e){
+    box.innerHTML='<p style="color:var(--danger)">خطا در ساخت QR</p>';
+  }
+}
+
+async function loadLb(){
+  const res=await rpc('royal_leaderboard',{p_limit:20});
+  const el=document.getElementById('lbList');
+  if(!res||!res.ok){ el.innerHTML='<p style="color:var(--danger)">خطا</p>'; return; }
+  const rows=res.rows||[];
+  el.innerHTML=rows.map((r,i)=>'<div class="lb-row"><div class="lb-rank">'+(i+1)+'</div><div style="flex:1"><b>'+esc(r.display_name||r.username)+'</b><div style="color:var(--muted);font-size:.75rem">@'+esc(r.username)+'</div></div><div style="color:var(--gold2);font-weight:800">'+r.points+'</div></div>').join('')||'<p style="color:var(--muted)">هنوز کسی نیست</p>';
+}
+
+async function loadPublic(uname){
+  const res=await rpc('royal_public_profile',{p_username:uname});
+  if(!res||!res.ok){
+    document.getElementById('pubInner').innerHTML='<p style="color:var(--danger)">پروفایل یافت نشد</p><p><a href="?">بازگشت</a></p>';
+    return;
+  }
+  const p=res.profile;
+  document.getElementById('pubLetter').textContent=(p.display_name||p.username||'?').slice(0,1).toUpperCase();
+  document.getElementById('pubName').textContent=p.display_name||p.username;
+  document.getElementById('pubUser').textContent='@'+p.username;
+  document.getElementById('pubPoints').textContent=p.points;
+  document.getElementById('pubLevel').textContent=p.level;
+  document.getElementById('pubTasks').textContent=(p.tasks_done||0)+'/'+(p.tasks_total||0);
+  document.getElementById('pubBadges').innerHTML=(p.badges||[]).map(b=>'<span class="badge">'+esc(String(b))+'</span>').join('');
+}
+
+// tabs
+document.getElementById('tabLogin').onclick=function(){
+  this.classList.add('on'); document.getElementById('tabReg').classList.remove('on');
+  show(document.getElementById('loginBox')); hide(document.getElementById('regBox'));
+  document.getElementById('authMsg').textContent='';
+};
+document.getElementById('tabReg').onclick=function(){
+  this.classList.add('on'); document.getElementById('tabLogin').classList.remove('on');
+  hide(document.getElementById('loginBox')); show(document.getElementById('regBox'));
+  document.getElementById('authMsg').textContent='';
+};
+
+document.getElementById('btnLogin').onclick=async function(){
+  const msg=document.getElementById('authMsg');
+  msg.textContent=''; msg.className='msg';
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  if(!u||!p){ msg.textContent='همه فیلدها لازم است'; return; }
+  this.disabled=true;
+  const hash=await sha256(p);
+  const res=await rpc('royal_login',{p_username:u,p_hash:hash});
+  this.disabled=false;
+  if(!res||!res.ok){ msg.textContent=(res&&res.error)||'خطا در ورود'; return; }
+  setToken(res.token); user=res.user;
+  hide(document.getElementById('auth'));
+  document.getElementById('app').style.display='block';
+  renderUser(); await loadTasks();
+  // auto complete join
+  await rpc('royal_complete_task',{p_token:token,p_task_key:'join_royal'});
+  const me=await rpc('royal_me',{p_token:token}); if(me&&me.ok){user=me.user; renderUser(); }
+  await loadTasks();
+};
+
+document.getElementById('btnReg').onclick=async function(){
+  const msg=document.getElementById('authMsg');
+  msg.textContent=''; msg.className='msg';
+  const u=document.getElementById('regUser').value.trim();
+  const n=document.getElementById('regName').value.trim();
+  const p=document.getElementById('regPass').value;
+  const p2=document.getElementById('regPass2').value;
+  if(!u||!p){ msg.textContent='نام کاربری و رمز لازم است'; return; }
+  if(p.length<8){ msg.textContent='رمز حداقل ۸ کاراکتر'; return; }
+  if(p!==p2){ msg.textContent='رمزها یکسان نیستند'; return; }
+  this.disabled=true;
+  const hash=await sha256(p);
+  const res=await rpc('royal_register',{p_username:u,p_hash:hash,p_display:n||u});
+  this.disabled=false;
+  if(!res||!res.ok){ msg.textContent=(res&&res.error)||'خطا در ثبت‌نام'; return; }
+  setToken(res.token); user=res.user;
+  hide(document.getElementById('auth'));
+  document.getElementById('app').style.display='block';
+  renderUser(); await loadTasks();
+  await rpc('royal_complete_task',{p_token:token,p_task_key:'join_royal'});
+  const me=await rpc('royal_me',{p_token:token}); if(me&&me.ok){ user=me.user; renderUser(); }
+  await loadTasks();
+};
+
+document.querySelectorAll('.nav button').forEach(b=>{
+  b.onclick=async ()=>{
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    ['panelTasks','panelQr','panelLb','panelMore'].forEach(id=>hide(document.getElementById(id)));
+    show(document.getElementById(b.dataset.panel));
+    if(b.dataset.panel==='panelQr') renderQr();
+    if(b.dataset.panel==='panelLb') loadLb();
+  };
+});
+
+document.getElementById('btnLogout').onclick=async ()=>{
+  if(token) await rpc('royal_logout',{p_token:token});
+  setToken(''); user=null;
+  document.getElementById('app').style.display='none';
+  show(document.getElementById('auth'));
+};
+
+document.getElementById('btnCopyLink').onclick=async ()=>{
+  if(!user) return;
+  const link=location.origin+location.pathname+'?u='+encodeURIComponent(user.username);
+  try{ await navigator.clipboard.writeText(link); alert('لینک کپی شد'); }catch(e){ prompt('کپی کن:', link); }
+};
+
+boot();
+})();
+</script>
+</body>
+</html>
